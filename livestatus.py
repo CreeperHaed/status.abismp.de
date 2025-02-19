@@ -10,7 +10,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 # Minecraft server details
 MC_SERVER_IP = "your.minecraft.server.ip"  # Replace with your server IP
 MC_SERVER_PORT = 25565  # Default Minecraft port (change if needed)
-CHANNEL_ID = 0  # your channel ID here (text-based channels do not support spaces)
+CHANNEL_ID = 1234567890123456789  # your channel ID here (text-based channels do not support spaces)
 
 # Function to check Minecraft server status
 async def check_minecraft_server():
@@ -21,6 +21,7 @@ async def check_minecraft_server():
             "online": True,
             "players": status.players.online,
             "max_players": status.players.max,
+            "protocol": status.version.protocol,
             "latency": status.latency
         }
     except Exception as e:
@@ -29,19 +30,23 @@ async def check_minecraft_server():
             "online": False,
             "players": 0,
             "max_players": 0,
+            "protocol": 0,
             "latency": 0
         }
 
 # Task to update the channel
-@tasks.loop(seconds=20)
+@tasks.loop(seconds=30)
 async def update_channel():
     channel = bot.get_channel(CHANNEL_ID)
     if channel:
         server_status = await check_minecraft_server()
         if server_status["online"]:
-            await channel.edit(name=f"Players Online: {server_status['players']}/{server_status['max_players']}")
+            if server_status['protocol'] != -1:
+                await channel.edit(name=f"Server: 🟢 {server_status['players']}")
+            else:
+                await channel.edit(name=f"Server: 🟡🚧")
         else:
-            await channel.edit(name="Server Offline")
+            await channel.edit(name="Server: 🔴 OFFLINE")
 
 # Bot startup
 @bot.event
