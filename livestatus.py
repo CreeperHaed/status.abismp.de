@@ -3,6 +3,7 @@ from discord.ext import tasks, commands
 from mcstatus import JavaServer
 import config
 
+last_status = None
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
@@ -26,18 +27,25 @@ async def check_minecraft_server():
         }
 
 # Task to update the channel
-@tasks.loop(seconds=30)
+@tasks.loop(seconds=300)
 async def update_channel():
+    global last_status
+    server_status = await check_minecraft_server()
+    if server_status["online"]:
+        if server_status['protocol'] != -1:
+            new_status=f"Server: 🟢 {server_status['players']}"
+        else:
+            new_status=f"Server: 🟡 🚧"
+    else:
+            new_status="Server: 🔴 OFFLINE"
+
     channel = bot.get_channel(config.LIVESTATUS_CHANNEL_ID)
     if channel:
-        server_status = await check_minecraft_server()
-        if server_status["online"]:
-            if server_status['protocol'] != -1:
-                await channel.edit(name=f"Server: 🟢 {server_status['players']}")
-            else:
-                await channel.edit(name=f"Server: 🟡🚧")
+        if last_status != new_status:
+            await channel.edit(name=new_status)
+            last_status = new_status
         else:
-            await channel.edit(name="Server: 🔴 OFFLINE")
+            print("unmodified status")
 
 # Bot startup
 @bot.event
