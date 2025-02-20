@@ -12,7 +12,7 @@ except ImportError:
     MC_SERVER_PORT = 25565  # Default Minecraft port (change if needed)
 
     # Here are some examples of what else could be monitored on the Server
-    MC_VOICECHAT_PORT = 24456
+    MC_VOICECHAT_PORT = 24454
 
 # List of services to monitor
 ports = [  # supported types: "minecraft", tcp, udp, http, https
