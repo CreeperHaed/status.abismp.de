@@ -16,7 +16,7 @@ async def on_voice_state_update(member, before, after):
         category = bot.get_channel(config.CREATEVC_CATEGORY_ID)
         if category and isinstance(category, discord.CategoryChannel):
             new_channel = await category.create_voice_channel(
-                name=f"{member.name}'s VC",
+                name=f"{member.display_name}'s VC",
                 user_limit=0  # Optional: Set a user limit
             )
             # Move the user to the new channel
