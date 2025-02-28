@@ -21,6 +21,8 @@ async def on_voice_state_update(member, before, after):
             )
             # Move the user to the new channel
             await member.move_to(new_channel)
+            # Give User Permission to edit his own Channel
+            await new_channel.set_permissions(member, manage_channels=True)
             # Store the channel in the dictionary
             temp_channels[new_channel.id] = new_channel
 
