@@ -17,7 +17,7 @@ async def on_voice_state_update(member, before, after):
         if category and isinstance(category, discord.CategoryChannel):
             new_channel = await category.create_voice_channel(
                 name=f"{member.display_name}'s VC",
-                user_limit=0  # Optional: Set a user limit
+                user_limit=0
             )
             # Move the user to the new channel
             await member.move_to(new_channel)
@@ -26,14 +26,18 @@ async def on_voice_state_update(member, before, after):
             # Store the channel in the dictionary
             temp_channels[new_channel.id] = new_channel
 
-    # Check if the user left a temporary voice channel
+    # Check if the temporary voice channel is empty
     if before.channel and before.channel.id in temp_channels:
-        # Check if the channel is empty
-        if len(before.channel.members) == 0:
-            # Delete the channel
-            await before.channel.delete()
-            # Remove the channel from the dictionary
+        # Check if the channel still exists
+        channel = bot.get_channel(before.channel.id)
+        if channel is None:
             del temp_channels[before.channel.id]
+        else:
+            # Check if the channel is empty
+            if len(before.channel.members) == 0:
+                # Delete the channel
+                await before.channel.delete()
+                # Remove the channel from the dictionary
+                del temp_channels[before.channel.id]
 
-# Run the bot
 bot.run(config.DISCORD_BOT_TOKEN)

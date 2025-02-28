@@ -26,7 +26,7 @@ async def check_minecraft_server():
             "protocol": 0
         }
 
-# Task to update the channel
+# Task to update the channel - extremely slow because of discords rate limit
 @tasks.loop(seconds=300)
 async def update_channel():
     global last_status
@@ -47,7 +47,6 @@ async def update_channel():
         else:
             print("unmodified status")
 
-# Bot startup
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user.name}')
