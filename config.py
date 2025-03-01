@@ -8,6 +8,7 @@ except ImportError:
     CREATEVC_CHANNEL_ID = 123456789012345679
     CREATEVC_CATEGORY_ID = 123456789012345680
 
+    MC_SERVER_NAME = "CoolMinecraftServer"
     MC_SERVER_IP = "your.server.ip"
     MC_SERVER_PORT = 25565  # Default Minecraft port (change if needed)
 
@@ -17,7 +18,7 @@ except ImportError:
 # List of services to monitor
 ports = [  # supported types: "minecraft", tcp, udp, http, https
     {
-        "name": "Minecraft Server",
+        "name": MC_SERVER_NAME,
         "host": MC_SERVER_IP,
         "port": MC_SERVER_PORT,
         "type": "minecraft"
