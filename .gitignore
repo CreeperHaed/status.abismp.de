@@ -5,3 +5,6 @@ __pycache__/
 config_local.py
 # vscode spelling settings
 .vscode/
+
+# project tests
+some cool tests/
