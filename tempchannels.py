@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
-import config
+
+try: import config_local as config
+except ImportError: import config
 
 intents = discord.Intents.default()
 intents.voice_states = True

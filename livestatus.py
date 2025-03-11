@@ -1,7 +1,9 @@
 import discord
 from discord.ext import tasks, commands
 from mcstatus import JavaServer
-import config
+
+try: import config_local as config
+except ImportError: import config
 
 last_status = None
 intents = discord.Intents.default()
