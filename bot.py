@@ -1,6 +1,6 @@
 ###################  C O N F I G  ###################
 
-PUBLIC_ADDRESS = "pawcraft.abismp.de"
+PUBLIC_ADDRESS = "abismp.de"
 LOCAL_ADDRESS = "localhost"
 PORT = 25565
 
