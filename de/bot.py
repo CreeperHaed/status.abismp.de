@@ -155,8 +155,6 @@ async def check_minecraft_server():
                 "protocol": None, "motd": None
             }
 
-##### Optimisation Needed ##### (and some goddamn fix)
-
 async def generate_transcript(channel: discord.TextChannel, creator):
     today = datetime.datetime.now().strftime("%Y-%m")
     dated_folder = f"{TRANSCRIPT_FOLDER}/{today}"
@@ -210,9 +208,9 @@ class TicketView(View):
         dropdown = Select(
             placeholder=choose_category,
             options=[
-                discord.SelectOption(label=TICKET_TYPE["question"], value="question", emoji="❔"),
-                discord.SelectOption(label=TICKET_TYPE["help"], value="help", emoji="🔧"),
-                discord.SelectOption(label=TICKET_TYPE["report"], value="report", emoji="🚫"),
+                discord.SelectOption(label=TICKET_TYPE["question"], value="question", emoji=TICKET_TYPE["question_emoji"]),
+                discord.SelectOption(label=TICKET_TYPE["help"], value="help", emoji=TICKET_TYPE["help_emoji"]),
+                discord.SelectOption(label=TICKET_TYPE["report"], value="report", emoji=TICKET_TYPE["report_emoji"]),
             ]
         )
 
@@ -224,7 +222,7 @@ class TicketView(View):
 
             await interaction.response.edit_message(content=creating_ticket, view=None)
 
-            emoji = "❔" if ticket_type == "question" else "🔧" if ticket_type == "help" else "🚫"
+            emoji = TICKET_TYPE[ticket_type+"_emoji"]
             channel = await guild.create_text_channel(
                 name=f"{emoji}-{interaction.user.name}s-ticket",
                 topic=str(interaction.user.id),
@@ -236,7 +234,7 @@ class TicketView(View):
             await channel.set_permissions(staff_role, view_channel=True, send_messages=True, manage_messages=True)
 
             embed = discord.Embed(
-                title=f"{TICKET_TYPE["question"] if ticket_type == 'question' else TICKET_TYPE["help"] if ticket_type == 'help' else TICKET_TYPE["report"]}-Ticket",
+                title=f"{TICKET_TYPE[ticket_type]}-Ticket",
                 description=greeting.format(user=interaction.user.mention),
                 color=TICKET_EMBED_COLOR
             )
@@ -335,8 +333,6 @@ class CloseTicketView(View):
             calls_staff.format(user=interaction.user.mention,staff_id=STAFF_ROLE_ID),
             allowed_mentions=discord.AllowedMentions(roles=True)
         )
-
-############# optimized from here on
 
 class RoleView(View):
     def __init__(self):
