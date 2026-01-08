@@ -34,11 +34,11 @@ how_can_we_help_you = "Wie können wir dir helfen?:"
 choose_category = "Wähle eine Kategorie..."
 
 TICKET_TYPE = {
-    "help": "Help",
+    "help": "Hilfe",
     "help_emoji": "🔧",
-    "question": "Question",
+    "question": "Frage",
     "question_emoji": "❔",
-    "report": "Report",
+    "report": "Meldung",
     "report_emoji": "🚫"
 }
 
