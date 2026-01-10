@@ -156,6 +156,12 @@ async def check_minecraft_server():
                 "protocol": None, "motd": None
             }
 
+async def check_ticket(channel: discord.TextChannel, creator_id):
+    async for msg in channel.history(limit=None, oldest_first=True):
+        if msg.author.id == creator_id: 
+            return ""
+    return f"\n-# {LOG_EMBED["no_transcript"]}"
+
 async def generate_transcript(channel: discord.TextChannel, creator):
     today = datetime.datetime.now().strftime("%Y-%m")
     dated_folder = f"{TRANSCRIPT_FOLDER}/{today}"
@@ -292,31 +298,29 @@ class CloseTicketView(View):
 
         await interaction.response.defer()
 
-        creator_id = int(interaction.channel.topic)
-        creator = interaction.guild.get_member(creator_id)
-
-        transcript_file = await generate_transcript(interaction.channel, creator)
-
         log_channel = interaction.guild.get_channel(LOG_CHANNEL_ID)
         if log_channel:
-            with open(transcript_file, "rb") as f:
+            ticket_info = await check_ticket(interaction.channel, creator_id)
+            if ticket_info == "":
+                creator = interaction.guild.get_member(creator_id)
+                transcript_file = await generate_transcript(interaction.channel, creator)
                 if creator:
                     await log_channel.send(
                         f"{TRANSCRIPT["created_for"].format(user=interaction.channel.name)} {TRANSCRIPT["created_by"].format(creator=creator.display_name)}",
-                        file=discord.File(f)
+                        file=discord.File(open(transcript_file, "rb"))
                     )
                 else:
                     await log_channel.send(
                         f"{TRANSCRIPT["created_for"].format(user=interaction.channel.name)} {TRANSCRIPT["creator_left"]}",
-                        file=discord.File(f)
+                        file=discord.File(open(transcript_file, "rb"))
                     )
-
+            
             embed = discord.Embed(
                 title= LOG_EMBED["title_closed"],
                 description=(
                     f"**{LOG_EMBED["ticket"]}:** {interaction.channel.name}\n"
                     f"**{LOG_EMBED["creator"]}:** <@{creator_id}>\n"
-                    f"**{LOG_EMBED["closed_by"]}:** {interaction.user.mention}"
+                    f"**{LOG_EMBED["closed_by"]}:** {interaction.user.mention}{ticket_info}"
                 ),
                 color=EMBED_COLOR_CLOSED,
                 timestamp=datetime.datetime.now()
