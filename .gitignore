@@ -1,8 +1,10 @@
 # Python cache files
 __pycache__/
 *.pyc
+
 # local config file
 config_local.py
+
 # vscode spelling settings
 .vscode/
 

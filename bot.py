@@ -68,7 +68,8 @@ LOG_EMBED = {
     "type": "Type",
     "creator": "Created by",
     "created_by": "Created by",
-    "closed_by": "Closed by"
+    "closed_by": "Closed by",
+    "no_transcript": "Closed without Transcript!"
 }
 TRANSCRIPT = {
     "created_for": "📝 Transcript for {user}",
@@ -430,6 +431,28 @@ async def fixticket(ctx):
     )
     await ctx.send(embed=embed, view=CloseTicketView())
     await ctx.message.delete()
+
+@bot.command()
+@commands.has_role(STAFF_ROLE_ID)
+async def silentclose(ctx):
+    if ctx.channel.category_id != TICKET_CATEGORY_ID:
+        return await ctx.send(ERRORS["command_only_in_tickets"], ephemeral=True)
+
+    log_channel = ctx.guild.get_channel(LOG_CHANNEL_ID)
+    if log_channel:
+        embed = discord.Embed(
+            title= LOG_EMBED["title_closed"],
+            description=(
+                f"**{LOG_EMBED["ticket"]}:** {ctx.channel.name}\n"
+                f"**{LOG_EMBED["creator"]}:** <@{int(ctx.channel.topic)}>\n"
+                f"**{LOG_EMBED["closed_by"]}:** {ctx.author.mention}\n"
+                f"-# {LOG_EMBED["no_transcript"]}"
+            ),
+            color=EMBED_COLOR_CLOSED,
+            timestamp=datetime.datetime.now()
+        )
+        await log_channel.send(embed=embed)
+    await ctx.channel.delete()
 
 @bot.command()
 @commands.has_role(HOSTER_ROLE_ID)
