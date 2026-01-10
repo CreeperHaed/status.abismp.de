@@ -417,9 +417,12 @@ async def roles(ctx):
 @bot.command()
 @commands.has_role(STAFF_ROLE_ID)
 async def fixticket(ctx):
-    if ctx.channel.category_id != TICKET_CATEGORY_ID:
+    if ctx.channel.category_id != TICKET_CATEGORY_ID or ctx.channel.category_id == LOG_CHANNEL_ID:
         return await ctx.send(ERRORS["command_only_in_tickets"], ephemeral=True)
     
+    try: int(ctx.channel.topic) 
+    except: return await ctx.send(ERRORS["command_only_in_tickets"], ephemeral=True)
+   
     async for msg in ctx.channel.history(limit=10):
         if msg.components:
             await msg.delete()
@@ -435,9 +438,12 @@ async def fixticket(ctx):
 @bot.command()
 @commands.has_role(STAFF_ROLE_ID)
 async def silentclose(ctx):
-    if ctx.channel.category_id != TICKET_CATEGORY_ID:
+    if ctx.channel.category_id != TICKET_CATEGORY_ID or ctx.channel.category_id == LOG_CHANNEL_ID:
         return await ctx.send(ERRORS["command_only_in_tickets"], ephemeral=True)
-
+    
+    try: int(ctx.channel.topic) 
+    except: return await ctx.send(ERRORS["command_only_in_tickets"], ephemeral=True)
+   
     log_channel = ctx.guild.get_channel(LOG_CHANNEL_ID)
     if log_channel:
         embed = discord.Embed(
