@@ -493,6 +493,7 @@ async def cleartests(ctx):
         ),
         ephemeral=True
     )
+    await ctx.message.delete()
 
 @bot.event
 async def on_ready():
