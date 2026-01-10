@@ -190,13 +190,14 @@ async def generate_transcript(channel: discord.TextChannel, creator):
         """)
 
         async for message in channel.history(limit=None, oldest_first=True):
-            f.write(f"""
-            <div class="message">
-                <span class="author">{html.escape(message.author.display_name)}</span>
-                <span class="timestamp">{message.created_at.strftime('%Y-%m-%d %H:%M:%S')}</span>
-                <div class="content">{html.escape(message.content)}</div>
-            </div>
-            """)
+            if message.author != bot.user:
+                f.write(f"""
+                <div class="message">
+                    <span class="author">{html.escape(message.author.display_name)}</span>
+                    <span class="timestamp">{message.created_at.strftime('%Y-%m-%d %H:%M:%S')}</span>
+                    <div class="content">{html.escape(message.content)}</div>
+                </div>
+                """)
 
         f.write("""
             </div>
